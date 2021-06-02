@@ -8,7 +8,9 @@ module.exports = {
     ecmaFeatures: {
       "jsx": true,
       "modules": true
-    }
+    },
+    sourceType: "module",
+    allowImportExportEverywhere: true
   },
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',

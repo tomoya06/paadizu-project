@@ -3,6 +3,8 @@ import { MyRoomState } from "./schema/MyRoomState";
 import { UserOptions } from '../../../common/types';
 
 export class MyRoom extends Room<MyRoomState> {
+  maxClients = 4;
+  autoDispose = false;
 
   onCreate (options: UserOptions) {
     this.setState(new MyRoomState());

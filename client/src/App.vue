@@ -6,17 +6,24 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Provide } from 'vue-property-decorator';
-import * as Colyseus from 'colyseus.js';
-import { v4 as uuidv4 } from 'uuid';
+import { Action } from 'vuex-class';
+import types from './store/types';
 
 @Component
 export default class App extends Vue {
-  @Provide()
-  private client = new Colyseus.Client('ws://localhost:2567');
+  @Action(types.INIT)
+  private init!: () => void;
 
-  @Provide()
-  private userId = uuidv4();
+  @Action(types.DESTROY)
+  private destroy!: () => void;
+
+  created(): void {
+    this.init();
+  }
+
+  beforeDestroy(): void {
+    this.destroy();
+  }
 }
 </script>
 

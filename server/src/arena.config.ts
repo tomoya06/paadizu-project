@@ -1,9 +1,10 @@
 import Arena from "@colyseus/arena";
 import { monitor } from "@colyseus/monitor";
-import { LobbyRoom, matchMaker } from 'colyseus';
+import { matchMaker } from 'colyseus';
 import { RoomName } from "../../common/types";
 
 import { MyRoom } from "./rooms/MyRoom";
+import { MyLobbyRoom } from "./rooms/Lobby";
 
 const ReservedGamingRoom = 3;
 
@@ -11,7 +12,7 @@ export default Arena({
     getId: () => "namwaa_paadizu",
 
     initializeGameServer: (gameServer) => {
-        gameServer.define(RoomName.Lobby, LobbyRoom);
+        gameServer.define(RoomName.Lobby, MyLobbyRoom);
         gameServer.define(RoomName.Poker, MyRoom).enableRealtimeListing();
 
         matchMaker.createRoom(RoomName.Lobby, {autoDispose: false})

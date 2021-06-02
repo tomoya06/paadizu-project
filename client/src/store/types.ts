@@ -1,0 +1,12 @@
+export default {
+  // mutations
+  SET_CLIENT: 'SET_CLIENT',
+  SET_LOBBY: 'SET_LOBBY',
+  SET_MYROOM: 'SET_MYROOM',
+  // actions
+  INIT: 'INIT',
+  ENTER_LOBBY: 'ENTER_LOBBY',
+  ENTER_ROOM: 'ENTER_ROOM',
+  LEAVE_ROOM: 'LEAVE_ROOM',
+  DESTROY: 'DESTROY',
+};
