@@ -6,8 +6,10 @@ We just wanna make something playable & us familiar with, for fun.
 
 ## todo
 
-- [ ] room enter & leave
-- [ ] room client limit
+- [x] room enter & leave
+- [x] room client limit
+- [ ] see others in room
+- [ ] * see others in lobby
 - [ ] send message in lobby
 - [ ] send message in room
 - [ ] casually play card in room

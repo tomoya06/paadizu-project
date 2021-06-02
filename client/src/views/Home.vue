@@ -3,6 +3,7 @@
     <div class="rooms">
       <template v-if="lobby">
         <div>{{lobby.name}} #{{lobby.id}}</div>
+        <div>USERID: {{userId}}</div>
       </template>
       <div class="room" v-for="room in allRooms" :key="room.roomId">
         <span>ROOM #{{ room.roomId }} </span>
@@ -40,6 +41,9 @@ export default class Home extends Vue {
 
   @Getter('myRoomId')
   private myRoomId!: string;
+
+  @State
+  private userId!: string;
 
   @Action(types.ENTER_ROOM)
   private enterRoom!: ({ roomId }:{roomId: string}) => void;
