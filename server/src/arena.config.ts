@@ -1,15 +1,28 @@
 import Arena from "@colyseus/arena";
 import { monitor } from "@colyseus/monitor";
-import { LobbyRoom } from 'colyseus';
+import { LobbyRoom, matchMaker } from 'colyseus';
+import { RoomName } from "../../common/types";
 
 import { MyRoom } from "./rooms/MyRoom";
+
+const ReservedGamingRoom = 3;
 
 export default Arena({
     getId: () => "namwaa_paadizu",
 
     initializeGameServer: (gameServer) => {
-        gameServer.define('lobby', LobbyRoom);
-        gameServer.define('my_room', MyRoom).enableRealtimeListing();
+        gameServer.define(RoomName.Lobby, LobbyRoom);
+        gameServer.define(RoomName.Poker, MyRoom).enableRealtimeListing();
+
+        matchMaker.createRoom(RoomName.Lobby, {autoDispose: false})
+            .then((room) => {console.log('lobby created')})
+            .catch((error) => {console.log('failed to create lobby', error)});
+        
+        for (let i=1; i<=ReservedGamingRoom; i+=1) {
+            matchMaker.createRoom(RoomName.Poker, {autoDispose: false})
+            .then((room) => {console.log(`room ${i}#${room.roomId} created`)})
+            .catch((error) => {console.log(`failed to create room${i}`, error)});
+        }
     },
 
     initializeExpress: (app) => {

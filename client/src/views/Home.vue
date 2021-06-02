@@ -22,6 +22,7 @@ import { Component, Inject, Vue } from 'vue-property-decorator';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import * as Colyseus from 'colyseus.js';
 import { RoomAvailable } from 'colyseus.js';
+import { RoomName } from '../../../common/types';
 
 @Component({
   components: {
@@ -42,7 +43,8 @@ export default class Home extends Vue {
   private allRooms: RoomAvailable[] = [];
 
   async mounted(): Promise<void> {
-    const lobby = await this.client.joinOrCreate('lobby');
+    const lobby = await this.client.join(RoomName.Lobby);
+    console.log('joined lobby');
     lobby.onMessage('rooms', (rooms) => {
       this.allRooms = rooms;
     });
@@ -62,7 +64,7 @@ export default class Home extends Vue {
 
   async createRoom(): Promise<void> {
     try {
-      this.myRoom = await this.client.joinOrCreate('my_room', { userId: this.userId });
+      this.myRoom = await this.client.joinOrCreate(RoomName.Poker, { userId: this.userId });
       console.log(this.myRoom);
     } catch (error) {
       console.log(error);
