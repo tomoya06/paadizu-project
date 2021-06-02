@@ -77,7 +77,10 @@ export default new Vuex.Store({
       if (state.myRoom) throw new Error('youre in a room. leave it first');
 
       const myRoom = await state.client.joinById(roomId, { userId: state.userId });
-      console.log(myRoom);
+      // myRoom.onMessage(RoomEvents.Players, (args) => {
+      //   console.log('players', args);
+      // });
+
       commit(types.SET_MYROOM, myRoom);
     },
     [types.LEAVE_ROOM]: async ({ state }: ActionParam) => {

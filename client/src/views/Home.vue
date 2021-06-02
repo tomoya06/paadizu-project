@@ -9,27 +9,28 @@
         <span>ROOM #{{ room.roomId }} </span>
         <span>HAS {{ room.clients }}/{{ room.maxClients }}</span>
         <button @click="() => enterRoomHandler(room)" v-show="!myRoomId">Enter</button>
-        <button @click="() => leaveRoomHandler(room)" v-show="room.roomId === myRoomId">
+        <button @click="() => leaveRoomHandler()" v-show="room.roomId === myRoomId">
           Leave
         </button>
       </div>
+      <Room v-if="myRoomId"/>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import * as Colyseus from 'colyseus.js';
 import { RoomAvailable } from 'colyseus.js';
 import {
-  State, Action, Mutation, Getter,
+  State, Action, Getter,
 } from 'vuex-class';
 import types from '@/store/types';
+import Room from './Room.vue';
 
 @Component({
   components: {
-    HelloWorld,
+    Room,
   },
 })
 export default class Home extends Vue {
@@ -55,7 +56,7 @@ export default class Home extends Vue {
     this.enterRoom({ roomId: room.roomId });
   }
 
-  async leaveRoomHandler(room: RoomAvailable): Promise<void> {
+  async leaveRoomHandler(): Promise<void> {
     this.leaveRoom();
   }
 }

@@ -1,6 +1,7 @@
 import { Room, Client } from "colyseus";
-import { MyRoomState } from "./schema/MyRoomState";
-import { UserOptions } from '../../../common/types';
+import { MyRoomState, PlayerState } from "../../../common/schema/MyRoomState";
+import { RoomEvents, UserOptions, RoomMessage } from '../../../common/types';
+import { v4 as uuidv4 } from 'uuid';
 
 export class MyRoom extends Room<MyRoomState> {
   maxClients = 4;
@@ -9,10 +10,16 @@ export class MyRoom extends Room<MyRoomState> {
   onCreate (options: UserOptions) {
     this.setState(new MyRoomState());
 
-    this.onMessage("type", (client, message) => {
-      //
-      // handle "type" message
-      //
+    this.onMessage(RoomEvents.SendMessage, (client, message: string) => {
+      if (!client.userData) return;
+      const userData = client.userData as UserOptions;
+      const payload: RoomMessage = {
+        msgId: uuidv4(),
+        from: userData,
+        msg: message,
+      }
+      console.log('broadcast');
+      this.broadcast(RoomEvents.Message, payload);
     });
   }
 
@@ -25,14 +32,25 @@ export class MyRoom extends Room<MyRoomState> {
   onJoin (client: Client, options: UserOptions) {
     console.log(client.sessionId, options.userId, "joined!");
     client.userData = options;
+    const playerState = new PlayerState(client.sessionId, options);
+    this.state.players.push(playerState);
+
+    this.handlePlayerChange();
   }
 
   onLeave (client: Client, consented: boolean) {
     console.log(client.sessionId, "left!");
+
+    this.state.players.deleteAt(this.state.players.findIndex((state) => state.sessionId === client.sessionId));
+    this.handlePlayerChange();
   }
 
   onDispose() {
     console.log("room", this.roomId, "disposing...");
+  }
+
+  handlePlayerChange() {
+    this.broadcast(RoomEvents.Players, this.state.players);
   }
 
 }

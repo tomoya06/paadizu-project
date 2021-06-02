@@ -2,11 +2,22 @@
   "name": "paadizu-project",
   "version": "1.0.0",
   "description": "",
-  "workspaces": ["./client", "./server"],
-  "main": "vetur.config.js",
+  "workspaces": [
+    "./client",
+    "./server",
+    "./common"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@colyseus/schema": "^1.0.24",
+    "@types/uuid": "^8.3.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "tslib": "^2.2.0"
+  }
 }
