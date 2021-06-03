@@ -30,6 +30,7 @@
   "dependencies": {
     "@colyseus/arena": "^0.14.9",
     "@colyseus/monitor": "^0.14.0",
+    "@colyseus/schema": "^1.0.24",
     "@colyseus/social": "^0.10.9",
     "@types/uuid": "^8.3.0",
     "colyseus": "^0.14.0",

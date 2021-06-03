@@ -12,7 +12,7 @@ We just wanna make something playable & us familiar with, for fun.
 - [x] room client limit
 - [x] see others in room
 - [x] send message in room
-- [ ] set username and update to all
+- [ ] set username and show to all
 - [ ] casually play card in room
 - [ ] auto start in room
 - [ ] auto end in room

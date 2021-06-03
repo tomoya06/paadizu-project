@@ -2,10 +2,13 @@ import { Room, Client } from "colyseus";
 import { MyRoomState, PlayerState } from "../../../common/schema/MyRoomState";
 import { RoomEvents, UserOptions, RoomMessage } from '../../../common/types';
 import { v4 as uuidv4 } from 'uuid';
+import GameEngine from "./MyRoomGameEngine";
 
 export class MyRoom extends Room<MyRoomState> {
   maxClients = 4;
   autoDispose = false;
+
+  gameEngine: GameEngine = null;
 
   onCreate (options: UserOptions) {
     this.setState(new MyRoomState());
@@ -30,7 +33,7 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   onJoin (client: Client, options: UserOptions) {
-    console.log(client.sessionId, options.userId, "joined!");
+    console.log(client.sessionId, options.userName, "joined!");
     client.userData = options;
     const playerState = new PlayerState(client.sessionId, options);
     this.state.players.push(playerState);
@@ -51,6 +54,13 @@ export class MyRoom extends Room<MyRoomState> {
 
   handlePlayerChange() {
     this.broadcast(RoomEvents.Players, this.state.players);
+
+    if (this.locked) {
+      this.gameEngine = new GameEngine(this);
+    } else if (this.gameEngine) {
+      this.gameEngine.destroy();
+      this.gameEngine = null;
+    }
   }
 
 }

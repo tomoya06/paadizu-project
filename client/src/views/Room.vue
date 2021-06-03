@@ -6,7 +6,7 @@
     <template v-else>
       <div>{{ myRoom.id }} {{ myRoom.name }}</div>
       <div v-for="player in players" :key="player.userId">
-        <div>{{player.userId}} {{player.sessionId}}</div>
+        <div>{{player.userName}} {{player.sessionId}}</div>
       </div>
 
       <div>
@@ -14,7 +14,7 @@
         <button @click="sendMessage">send</button>
         <div>
           <div v-for="msg in msgList" :key="msg.msgId">
-            @{{msg.from.userId}}: {{msg.msg}}
+            @{{msg.from.userName}}: {{msg.msg}}
           </div>
         </div>
       </div>

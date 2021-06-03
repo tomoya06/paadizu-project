@@ -3,7 +3,7 @@ import Vuex, { Commit, Dispatch } from 'vuex';
 import { Client, Room, RoomAvailable } from 'colyseus.js';
 import { v4 as uuidv4 } from 'uuid';
 import types from './types';
-import { RoomName } from '../../../common/types';
+import { RoomName, UserOptions } from '../../../common/types';
 
 Vue.use(Vuex);
 
@@ -12,7 +12,7 @@ interface State {
   lobby: Room|null;
   myRoom: Room|null;
   allRooms: RoomAvailable[];
-  userId: string;
+  userInfo: UserOptions;
 }
 
 interface ActionParam {
@@ -22,13 +22,19 @@ interface ActionParam {
 }
 
 export default new Vuex.Store({
-  state: (): State => ({
-    client: null,
-    lobby: null,
-    myRoom: null,
-    allRooms: [],
-    userId: uuidv4(),
-  }),
+  state: (): State => {
+    const uuid = uuidv4();
+    return {
+      client: null,
+      lobby: null,
+      myRoom: null,
+      allRooms: [],
+      userInfo: {
+        userId: uuid,
+        userName: `种子选手${uuid.slice(0, 4)}`,
+      },
+    };
+  },
   mutations: {
     [types.SET_CLIENT]: (state: State, client: Client) => {
       state.client = client;
@@ -54,7 +60,7 @@ export default new Vuex.Store({
     },
     [types.ENTER_LOBBY]: async ({ commit, state }: ActionParam) => {
       if (!state.client) throw new Error('no client');
-      const lobby = await state.client.join(RoomName.Lobby);
+      const lobby = await state.client.join(RoomName.Lobby, state.userInfo);
       console.log('joined lobby');
       lobby.onMessage('rooms', (rooms) => {
         state.allRooms = rooms;
@@ -76,7 +82,7 @@ export default new Vuex.Store({
       if (!state.client) throw new Error('no client');
       if (state.myRoom) throw new Error('youre in a room. leave it first');
 
-      const myRoom = await state.client.joinById(roomId, { userId: state.userId });
+      const myRoom = await state.client.joinById(roomId, state.userInfo);
       // myRoom.onMessage(RoomEvents.Players, (args) => {
       //   console.log('players', args);
       // });
