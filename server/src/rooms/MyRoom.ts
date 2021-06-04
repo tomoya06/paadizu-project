@@ -21,7 +21,6 @@ export class MyRoom extends Room<MyRoomState> {
         from: userData,
         msg: message,
       }
-      console.log('broadcast');
       this.broadcast(RoomEvents.Message, payload);
     });
 
