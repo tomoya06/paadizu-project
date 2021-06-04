@@ -14,8 +14,20 @@ export enum RoomName {
   Poker = 'my_room',
 }
 
+export enum GameActionType {
+  PlayCard,
+  Giveup,
+}
+
+export interface GameActionPayload {
+  type: GameActionType,
+  
+}
+
 export enum RoomEvents {
   Players = 'Players',
   Message = 'ChatMessage',
   SendMessage = 'SendMessage',
+  // 打牌相关
+  GameAction = 'GameAction',
 }

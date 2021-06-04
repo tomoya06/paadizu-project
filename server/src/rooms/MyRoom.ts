@@ -24,6 +24,8 @@ export class MyRoom extends Room<MyRoomState> {
       console.log('broadcast');
       this.broadcast(RoomEvents.Message, payload);
     });
+
+    this.gameEngine = new GameEngine(this);
   }
 
   onAuth(client: Client, options: UserOptions): boolean {
@@ -56,7 +58,7 @@ export class MyRoom extends Room<MyRoomState> {
     this.broadcast(RoomEvents.Players, this.state.players);
 
     if (this.locked) {
-      this.gameEngine = new GameEngine(this);
+      this.gameEngine.ready();
     } else if (this.gameEngine) {
       this.gameEngine.destroy();
       this.gameEngine = null;

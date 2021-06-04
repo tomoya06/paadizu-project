@@ -1,4 +1,6 @@
+import { Client } from "colyseus";
 import { MyRoomState } from "../../../common/schema/MyRoomState";
+import { GameActionPayload, RoomEvents } from "../../../common/types";
 import { MyRoom } from "./MyRoom";
 
 export default class GameEngine {
@@ -6,6 +8,8 @@ export default class GameEngine {
 
   constructor(room: MyRoom) {
     this.room = room;
+
+    this.registerEvents();
   }
 
   get roomState() {
@@ -14,9 +18,17 @@ export default class GameEngine {
 
   public actionHandler() {}
 
-  public gameSudato() {
-    
+  public start() {
+
   }
 
+  public ready() {}
+
   public destroy() {}
+
+  private registerEvents() {
+    this.room.onMessage(RoomEvents.GameAction, (client: Client, message: GameActionPayload)=> {
+      
+    })
+  }
 }
