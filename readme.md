@@ -14,13 +14,14 @@ We just wanna make something playable & we familiar with, for fun.
 - [x] room client limit
 - [x] see others in room
 - [x] send message in room
-- [ ] set username and show to all
+- [x] auto start in room
+- [x] auto end in room
 - [ ] casually play card in room
-- [ ] auto start in room
-- [ ] auto end in room
+- [ ] add poker rules
+- [ ] seriously play card in room
 - [ ] manually start game in room
 - [ ] leave room while in game
-- [ ] seriously play card in room
+- [ ] * set username and show to all
 - [ ] * see others in lobby
 - [ ] * send message in lobby
 
