@@ -1,5 +1,7 @@
 # PAADIZU PROJECT
 
+在做了！
+
 ## about this project
 
 We just wanna make something playable & we familiar with, for fun.
@@ -22,3 +24,6 @@ We just wanna make something playable & we familiar with, for fun.
 - [ ] * see others in lobby
 - [ ] * send message in lobby
 
+## more doc
+
+can be found [here](https://nwservice.feishu.cn/docs/doccnvpMMKuXU6t4PuFahBY44Ib)
