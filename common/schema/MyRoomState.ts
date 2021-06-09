@@ -5,12 +5,14 @@ export class PlayerState extends Schema {
   @type("string") userId: string;
   @type("string") userName: string;
   @type("string") sessionId: string;
+  @type("string") seat: string;
 
-  constructor(sessionId: string, userOptions: UserOptions) {
+  constructor(sessionId: string, userOptions: UserOptions, seat: string) {
     super();
     this.userId = userOptions.userId;
     this.userName = userOptions.userName;
     this.sessionId = sessionId;
+    this.seat = seat;
   }
 }
 
@@ -41,15 +43,16 @@ export class PdzPlayer extends Schema {
 
 
 export class GameState extends Schema {
-  @type("string") status: GameStatus = GameStatus.IDLE;
-  @type("number") index: number = -1;
-  @type([PlayCard]) stacks = new ArraySchema<PlayCard>();
-  @type({ map: PdzPlayer }) players = new MapSchema<PdzPlayer>();
+  @type("string") gameStatus: GameStatus = GameStatus.IDLE;
+  @type("number") countdown: number = 0;
+}
+
+export class PokerState extends Schema {
 }
 
 export class MyRoomState extends Schema {
 
-  @type([PlayerState]) players = new ArraySchema<PlayerState>();
+  @type({map: PlayerState}) players = new MapSchema<PlayerState>();
 
-  @type(GameState) game = new GameState();
+  @type(GameState) gameState: GameState = new GameState();
 }

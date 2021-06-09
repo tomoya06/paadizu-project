@@ -9,8 +9,6 @@ export default class GameEngine {
 
   private countdownMan: CountDownMan;
 
-  private gameStatus = GameStatus.IDLE;
-
   private pokerEngine: PokerEngine;
 
   constructor(room: MyRoom) {
@@ -19,6 +17,22 @@ export default class GameEngine {
 
   get roomState() {
     return this.room.state;
+  }
+
+  get gameStatus() {
+    return this.room.state.gameState.gameStatus;
+  }
+
+  set gameStatus(status: GameStatus) {
+    this.room.state.gameState.gameStatus = status;
+  }
+
+  get countdown() {
+    return this.room.state.gameState.countdown;
+  }
+
+  set countdown(num: number) {
+    this.room.state.gameState.countdown = num;
   }
 
   public actionHandler(client: Client, payload: GameActionPayload) {
@@ -33,7 +47,7 @@ export default class GameEngine {
     this.pokerEngine = new PokerEngine(this.room);
 
     this.gameStatus = GameStatus.RUNNING;
-    this.broadcastRoomStatus();
+    // this.broadcastRoomStatus();
 
     // // MOCK GAME OVER
     // setTimeout(() => {
@@ -47,7 +61,7 @@ export default class GameEngine {
     this.gameStatus = GameStatus.READY;
 
     this.countdownMan = new CountDownMan(3, (num: number) => {
-      this.broadcastRoomStatus(num);
+      this.countdown = num;
       if (num === 0) {
         this.start();
       }
@@ -59,7 +73,7 @@ export default class GameEngine {
     if (this.gameStatus !== GameStatus.RUNNING) return;
     this.gameStatus = GameStatus.FINISH;
     this.countdownMan = new CountDownMan(5, (num: number) => {
-      this.broadcastRoomStatus(num);
+      this.countdown = num;
       if (num === 0) {
         this.ready();
       }
@@ -69,7 +83,7 @@ export default class GameEngine {
   public destroy() {
     this.resetRoomUtils();
     this.gameStatus = GameStatus.IDLE;
-    this.broadcastRoomStatus();
+    // this.broadcastRoomStatus();
   }
 
   private resetRoomUtils() {
@@ -83,11 +97,11 @@ export default class GameEngine {
     }
   }
 
-  public broadcastRoomStatus(countdown = 0) {
-    const payload: GameStatusPayload = {
-      status: this.gameStatus,
-      countdown,
-    }
-    this.room.broadcast(RoomEvents.GameStatus, payload);
-  }
+  // public broadcastRoomStatus(countdown = 0) {
+  //   const payload: GameStatusPayload = {
+  //     status: this.gameStatus,
+  //     countdown,
+  //   }
+  //   this.room.broadcast(RoomEvents.GameStatus, payload);
+  // }
 }

@@ -27,42 +27,42 @@ import Component from 'vue-class-component';
 import * as Colyseus from 'colyseus.js';
 import { State } from 'vuex-class';
 import {
-  RoomEvents, RoomMessage, GameStatusPayload, GameStatus,
+  RoomEvents, RoomMessage,
 } from '../../../common/types';
-import { PlayerState } from '../../../common/schema/MyRoomState';
+import { PlayerState, MyRoomState, GameState } from '../../../common/schema/MyRoomState';
 
 @Component
 export default class Room extends Vue {
   @State
-  private myRoom!: Colyseus.Room|null;
+  private myRoom!: Colyseus.Room<MyRoomState>|null;
 
-  private players: PlayerState[] = [];
+  private players: Record<string, PlayerState> = {};
 
   private msgList: RoomMessage[] = [];
 
   private message = '';
 
-  private gameStatus: GameStatusPayload = {
-    status: GameStatus.IDLE,
-    countdown: 0,
-  };
+  private gameState: Record<string, any> = {};
 
   created(): void {
     const { myRoom } = this;
     if (!myRoom) return;
     console.log('handleMyRoomChange');
 
-    myRoom.onMessage(RoomEvents.Players, (players: PlayerState[]) => {
-      this.players = players;
-    });
-
     myRoom.onMessage(RoomEvents.Message, (payload: RoomMessage) => {
       this.msgList.push(payload);
     });
 
-    myRoom.onMessage(RoomEvents.GameStatus, (payload: GameStatusPayload) => {
-      this.gameStatus = payload;
-    });
+    // myRoom.onStateChange(this.handleGameStateChange);
+    myRoom.state.players.onChange = (player, key) => {
+      this.players[key] = player;
+    };
+    myRoom.state.gameState.onChange = (changes) => {
+      changes.forEach((change) => {
+        if (!this.gameState) this.gameState = {};
+        this.gameState[change.field] = change.value;
+      });
+    };
   }
 
   sendMessage(): void {
@@ -75,7 +75,8 @@ export default class Room extends Vue {
   }
 
   get gameStatusDisplay(): string {
-    return `${this.gameStatus.status} - ${this.gameStatus.countdown}`;
+    if (!this.gameState) return '';
+    return `${this.gameState.gameStatus} - ${this.gameState.countdown}`;
   }
 }
 </script>

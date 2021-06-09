@@ -10,6 +10,8 @@ export class MyRoom extends Room<MyRoomState> {
 
   gameEngine: GameEngine;
 
+  clientSeatMapper: Record<string, string> = {};
+
   onCreate (options: UserOptions) {
     this.setState(new MyRoomState());
 
@@ -40,22 +42,30 @@ export class MyRoom extends Room<MyRoomState> {
   onAuth(client: Client, options: UserOptions): boolean {
     if (!options || !options.userId) return false;
     if (this.clients.some((client) => client.userData && client.userData.userId === options.userId)) return false;
+    
     return true;
   }
 
   onJoin (client: Client, options: UserOptions) {
     console.log(client.sessionId, options.userName, "joined!");
     client.userData = options;
-    const playerState = new PlayerState(client.sessionId, options);
-    this.state.players.push(playerState);
+
+    const seat = this.findEmptySeat();
+    if (!seat) client.leave();
+    const playerState = new PlayerState(client.sessionId, options, seat);
+    this.state.players.set(seat, playerState);
+    this.clientSeatMapper[client.sessionId] = seat;
 
     this.handlePlayerChange();
   }
 
   onLeave (client: Client, consented: boolean) {
     console.log(client.sessionId, "left!");
-
-    this.state.players.deleteAt(this.state.players.findIndex((state) => state.sessionId === client.sessionId));
+    
+    const { sessionId } = client;
+    const seat = this.clientSeatMapper[sessionId];
+    this.state.players.delete(seat);
+    
     this.handlePlayerChange();
   }
 
@@ -64,9 +74,6 @@ export class MyRoom extends Room<MyRoomState> {
   }
 
   handlePlayerChange() {
-    this.broadcast(RoomEvents.Players, this.state.players);
-    this.gameEngine.broadcastRoomStatus();
-
     if (this.isRoomFull) {
       console.log('ready gameEngine');
       this.gameEngine.ready();
@@ -78,6 +85,13 @@ export class MyRoom extends Room<MyRoomState> {
 
   get isRoomFull(): boolean {
     return this.clients.length === this.maxClients;
+  }
+
+  private findEmptySeat(): string {
+    for (let i=0; i<4; i++) {
+      if (!this.state.players.get(`${i}`)) return i+'';
+      return '';
+    }
   }
 
 }
