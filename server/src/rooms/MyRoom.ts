@@ -1,6 +1,6 @@
 import { Room, Client } from "colyseus";
 import { MyRoomState, PlayerState } from "../../../common/schema/MyRoomState";
-import { RoomEvents, UserOptions, RoomMessage } from '../../../common/types';
+import { RoomEvents, UserOptions, RoomMessage, GameActionPayload } from '../../../common/types';
 import { v4 as uuidv4 } from 'uuid';
 import GameEngine from "./MyRoomGameEngine";
 
@@ -13,7 +13,11 @@ export class MyRoom extends Room<MyRoomState> {
   onCreate (options: UserOptions) {
     this.setState(new MyRoomState());
 
-    this.onMessage(RoomEvents.SendMessage, (client, message: string) => {
+    /*
+     注意：房间事件应该只有一次注册
+     */
+
+    this.onMessage(RoomEvents.SendMessage, (client: Client, message: string) => {
       if (!client.userData) return;
       const userData = client.userData as UserOptions;
       const payload: RoomMessage = {
@@ -24,7 +28,13 @@ export class MyRoom extends Room<MyRoomState> {
       this.broadcast(RoomEvents.Message, payload);
     });
 
-    this.gameEngine = new GameEngine(this);
+    const gameEngine = new GameEngine(this);
+
+    this.onMessage(RoomEvents.GameAction, (client: Client, payload: GameActionPayload) => {
+      gameEngine.actionHandler(client, payload);
+    })
+
+    this.gameEngine = gameEngine;
   }
 
   onAuth(client: Client, options: UserOptions): boolean {

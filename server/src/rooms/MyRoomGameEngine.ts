@@ -2,6 +2,7 @@ import { Client } from "colyseus";
 import { GameActionPayload, GameStatus, GameStatusPayload, RoomEvents } from "../../../common/types";
 import { MyRoom } from "./MyRoom";
 import { CountDownMan } from '../../../common/utils/time';
+import PokerEngine from "./PokerEngine";
 
 export default class GameEngine {
   private room!: MyRoom;
@@ -10,21 +11,27 @@ export default class GameEngine {
 
   private gameStatus = GameStatus.IDLE;
 
+  private pokerEngine: PokerEngine;
+
   constructor(room: MyRoom) {
     this.room = room;
-
-    this.registerEvents();
   }
 
   get roomState() {
     return this.room.state;
   }
 
-  public actionHandler() {}
+  public actionHandler(client: Client, payload: GameActionPayload) {
+    if (this.gameStatus !== GameStatus.RUNNING) return;
+    if (!this.pokerEngine) return;
+  }
 
   public start() {
     if (this.gameStatus !== GameStatus.READY) return;
-    this.clearCountdown();
+    this.resetRoomUtils();
+
+    this.pokerEngine = new PokerEngine(this.room);
+
     this.gameStatus = GameStatus.RUNNING;
     this.broadcastRoomStatus();
 
@@ -35,7 +42,7 @@ export default class GameEngine {
   }
 
   public ready() {
-    this.clearCountdown();
+    this.resetRoomUtils();
     if (![GameStatus.IDLE, GameStatus.FINISH].includes(this.gameStatus)) return;
     this.gameStatus = GameStatus.READY;
 
@@ -48,7 +55,7 @@ export default class GameEngine {
   }
 
   public finish() {
-    this.clearCountdown();
+    this.resetRoomUtils();
     if (this.gameStatus !== GameStatus.RUNNING) return;
     this.gameStatus = GameStatus.FINISH;
     this.countdownMan = new CountDownMan(5, (num: number) => {
@@ -60,21 +67,19 @@ export default class GameEngine {
   }
 
   public destroy() {
-    this.clearCountdown();
+    this.resetRoomUtils();
     this.gameStatus = GameStatus.IDLE;
     this.broadcastRoomStatus();
   }
 
-  private registerEvents() {
-    this.room.onMessage(RoomEvents.GameAction, (client: Client, message: GameActionPayload) => {
-      
-    })
-  }
-
-  private clearCountdown() {
+  private resetRoomUtils() {
     if (this.countdownMan) {
       this.countdownMan.stop();
       this.countdownMan = null;
+    }
+    if (this.pokerEngine) {
+      this.pokerEngine.destroy();
+      this.pokerEngine = null;
     }
   }
 
