@@ -4,7 +4,7 @@
       <div>not in any room</div>
     </template>
     <template v-else>
-      <div>{{ myRoom.id }} {{ myRoom.name }}</div>
+      <div>{{ myRoom.id }} {{ myRoom.name }} [STATUS: {{ gameStatusDisplay }}]</div>
       <div v-for="player in players" :key="player.userId">
         <div>{{player.userName}} {{player.sessionId}}</div>
       </div>
@@ -26,7 +26,9 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import * as Colyseus from 'colyseus.js';
 import { State } from 'vuex-class';
-import { RoomEvents, RoomMessage } from '../../../common/types';
+import {
+  RoomEvents, RoomMessage, GameStatusPayload, GameStatus,
+} from '../../../common/types';
 import { PlayerState } from '../../../common/schema/MyRoomState';
 
 @Component
@@ -40,6 +42,11 @@ export default class Room extends Vue {
 
   private message = '';
 
+  private gameStatus: GameStatusPayload = {
+    status: GameStatus.IDLE,
+    countdown: 0,
+  };
+
   created(): void {
     const { myRoom } = this;
     if (!myRoom) return;
@@ -52,6 +59,10 @@ export default class Room extends Vue {
     myRoom.onMessage(RoomEvents.Message, (payload: RoomMessage) => {
       this.msgList.push(payload);
     });
+
+    myRoom.onMessage(RoomEvents.GameStatus, (payload: GameStatusPayload) => {
+      this.gameStatus = payload;
+    });
   }
 
   sendMessage(): void {
@@ -61,6 +72,10 @@ export default class Room extends Vue {
       myRoom.send(RoomEvents.SendMessage, message);
       this.message = '';
     }
+  }
+
+  get gameStatusDisplay(): string {
+    return `${this.gameStatus.status} - ${this.gameStatus.countdown}`;
   }
 }
 </script>

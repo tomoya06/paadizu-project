@@ -1,5 +1,4 @@
 import { Client } from "colyseus";
-import {  MyRoomState } from "../../../common/schema/MyRoomState";
 import { GameActionPayload, GameStatus, GameStatusPayload, RoomEvents } from "../../../common/types";
 import { MyRoom } from "./MyRoom";
 import { CountDownMan } from '../../../common/utils/time';
@@ -55,7 +54,7 @@ export default class GameEngine {
     this.countdownMan = new CountDownMan(5, (num: number) => {
       this.broadcastRoomStatus(num);
       if (num === 0) {
-        this.start();
+        this.ready();
       }
     })
   }
