@@ -78,7 +78,7 @@ export default class GameEngine {
     }
   }
 
-  private broadcastRoomStatus(countdown = 0) {
+  public broadcastRoomStatus(countdown = 0) {
     const payload: GameStatusPayload = {
       status: this.gameStatus,
       countdown,

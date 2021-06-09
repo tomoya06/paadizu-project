@@ -8,7 +8,7 @@ export class MyRoom extends Room<MyRoomState> {
   maxClients = 4;
   autoDispose = false;
 
-  gameEngine: GameEngine = null;
+  gameEngine: GameEngine;
 
   onCreate (options: UserOptions) {
     this.setState(new MyRoomState());
@@ -55,12 +55,19 @@ export class MyRoom extends Room<MyRoomState> {
 
   handlePlayerChange() {
     this.broadcast(RoomEvents.Players, this.state.players);
+    this.gameEngine.broadcastRoomStatus();
 
-    if (this.locked) {
+    if (this.isRoomFull) {
+      console.log('ready gameEngine');
       this.gameEngine.ready();
-    } else if (this.gameEngine) {
+    } else {
+      console.log('destroy gameEngine');
       this.gameEngine.destroy();
     }
+  }
+
+  get isRoomFull(): boolean {
+    return this.clients.length === this.maxClients;
   }
 
 }
