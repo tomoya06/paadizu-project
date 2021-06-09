@@ -28,10 +28,10 @@ export default class GameEngine {
     this.gameStatus = GameStatus.RUNNING;
     this.broadcastRoomStatus();
 
-    // MOCK GAME OVER
-    setTimeout(() => {
-      this.finish();
-    }, 3000);
+    // // MOCK GAME OVER
+    // setTimeout(() => {
+    //   this.finish();
+    // }, 3000);
   }
 
   public ready() {

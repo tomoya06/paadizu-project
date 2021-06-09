@@ -1,0 +1,42 @@
+{
+  "name": "namwaa-pdz-sdk",
+  "version": "1.1.1",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "mocha -r ts-node/register src/test/*.test.ts",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc -p tsconfig.json && npm run minify",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "minify": "uglifyjs --compress --mangle --output dist/index.min.js -- dist/index.js",
+    "lint": "tslint -p tslint.json",
+    "prepare": "npm run build",
+    "postversion": "git push"
+  },
+  "keywords": [
+    "Poker",
+    "PDZ",
+    "Game",
+    "Namwaa"
+  ],
+  "author": "tomoya06",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^4.2.0",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.0",
+    "prettier": "^1.18.2",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.18.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.5.3",
+    "uglify-js": "^3.6.0"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.136",
+    "lodash": "^4.17.15"
+  }
+}
