@@ -2,7 +2,7 @@ export class CountDownMan {
   private cnt = -1;
   private timer = 0;
 
-  constructor(num: number, interval: number, handler: Function) {
+  constructor(num: number, handler: (num: number) => any) {
     this.cnt = num;
     handler(num);
     this.timer = setInterval(() => {
@@ -11,7 +11,7 @@ export class CountDownMan {
       if (this.cnt < 0) {
         clearInterval(this.timer);
       }
-    }, interval);
+    }, 1000);
   }
 
   public stop() {

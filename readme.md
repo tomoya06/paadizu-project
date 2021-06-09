@@ -2,7 +2,7 @@
 
 ## about this project
 
-We just wanna make something playable & us familiar with, for fun.
+We just wanna make something playable & we familiar with, for fun.
 
 ## todo
 

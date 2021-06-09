@@ -60,7 +60,6 @@ export class MyRoom extends Room<MyRoomState> {
       this.gameEngine.ready();
     } else if (this.gameEngine) {
       this.gameEngine.destroy();
-      this.gameEngine = null;
     }
   }
 

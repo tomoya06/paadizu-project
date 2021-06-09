@@ -19,15 +19,36 @@ export enum GameActionType {
   Giveup,
 }
 
+
+export enum GameStatus {
+  IDLE = "IDLE",
+  READY = "READY",
+  RUNNING = "RUNNING",
+  FINISH = "FINISH",
+}
+
+export enum PdzRole {
+  CIVILIAN = "CIVILIAN",
+  FRANKLIN = "FRANKLIN",
+  SQUIRE = "SQUIRE",
+}
+
 export interface GameActionPayload {
   type: GameActionType,
   
+}
+
+
+export interface GameStatusPayload {
+  status: GameStatus,
+  countdown: number,
 }
 
 export enum RoomEvents {
   Players = 'Players',
   Message = 'ChatMessage',
   SendMessage = 'SendMessage',
+  GameStatus = 'GamingStatus',
   // 打牌相关
   GameAction = 'GameAction',
 }

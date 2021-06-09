@@ -1,5 +1,5 @@
 import { Schema, Context, type, ArraySchema, MapSchema } from "@colyseus/schema";
-import { UserOptions } from "../types";
+import { GameStatus, PdzRole, UserOptions } from "../types";
 
 export class PlayerState extends Schema {
   @type("string") userId: string;
@@ -12,20 +12,6 @@ export class PlayerState extends Schema {
     this.userName = userOptions.userName;
     this.sessionId = sessionId;
   }
-}
-
-export enum GameStatus {
-  IDLE = "IDLE",
-  READY = "READY",
-  RUNNING = "RUNNING",
-  FINISH = "FINISH",
-}
-
-export enum PdzRole {
-  CIVILIAN = "CIVILIAN",
-  FRANKLIN = "FRANKLIN",
-  SQUIRE = "SQUIRE",
-
 }
 
 export class PlayCard extends Schema {
