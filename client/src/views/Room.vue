@@ -53,6 +53,7 @@ export default class Room extends Vue {
       this.msgList.push(payload);
     });
 
+    // FIXME: 状态变化不好玩
     // myRoom.onStateChange(this.handleGameStateChange);
     myRoom.state.players.onChange = (player, key) => {
       this.players[key] = player;
