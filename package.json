@@ -5,7 +5,7 @@
   "private": true,
   "packages": ["packages/*"],
   "scripts": {
-    "serve": "lerna run serve --parallel"
+    "serve": "lerna run --scope client serve --parallel"
   },
   "author": "",
   "license": "ISC",
