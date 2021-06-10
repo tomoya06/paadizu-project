@@ -2,13 +2,10 @@
   "name": "paadizu-project",
   "version": "1.0.0",
   "description": "",
-  "workspaces": [
-    "./client",
-    "./server",
-    "./common"
-  ],
+  "private": true,
+  "packages": ["packages/*"],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "lerna run serve --parallel"
   },
   "author": "",
   "license": "ISC",
@@ -18,6 +15,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "lerna": "^4.0.0",
     "tslib": "^2.2.0"
   }
 }
