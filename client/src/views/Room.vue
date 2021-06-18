@@ -1,6 +1,6 @@
 <template>
   <div style="border:1px solid #e9e9e9">
-    <template v-if="!myRoom">
+    <template v-if="!myRoom || !isReady">
       <div>not in any room</div>
     </template>
     <template v-else>
@@ -26,6 +26,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import * as Colyseus from 'colyseus.js';
 import { State } from 'vuex-class';
+import { MapSchema } from '@colyseus/schema';
 import {
   RoomEvents, RoomMessage,
 } from '../../../common/types';
@@ -34,15 +35,15 @@ import { PlayerState, MyRoomState, GameState } from '../../../common/schema/MyRo
 @Component
 export default class Room extends Vue {
   @State
-  private myRoom!: Colyseus.Room<MyRoomState>|null;
+  private myRoom!: Colyseus.Room<MyRoomState>;
 
-  private players: Record<string, PlayerState> = {};
+  private players: MapSchema<PlayerState>|null = null;
 
   private msgList: RoomMessage[] = [];
 
   private message = '';
 
-  private gameState: Record<string, any> = {};
+  private gameState: GameState|null = null;
 
   created(): void {
     const { myRoom } = this;
@@ -53,17 +54,11 @@ export default class Room extends Vue {
       this.msgList.push(payload);
     });
 
-    // FIXME: 状态变化不好玩
-    // myRoom.onStateChange(this.handleGameStateChange);
-    myRoom.state.players.onChange = (player, key) => {
-      this.players[key] = player;
-    };
-    myRoom.state.gameState.onChange = (changes) => {
-      changes.forEach((change) => {
-        if (!this.gameState) this.gameState = {};
-        this.gameState[change.field] = change.value;
-      });
-    };
+    myRoom.onStateChange((state: MyRoomState) => {
+      this.players = state.players;
+      this.gameState = state.gameState;
+      console.log(this.players, this.gameState);
+    });
   }
 
   sendMessage(): void {
@@ -78,6 +73,10 @@ export default class Room extends Vue {
   get gameStatusDisplay(): string {
     if (!this.gameState) return '';
     return `${this.gameState.gameStatus} - ${this.gameState.countdown}`;
+  }
+
+  get isReady(): boolean {
+    return !!this.players && !!this.gameState;
   }
 }
 </script>

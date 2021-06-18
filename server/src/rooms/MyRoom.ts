@@ -75,10 +75,8 @@ export class MyRoom extends Room<MyRoomState> {
 
   handlePlayerChange() {
     if (this.isRoomFull) {
-      console.log('ready gameEngine');
       this.gameEngine.ready();
     } else {
-      console.log('destroy gameEngine');
       this.gameEngine.destroy();
     }
   }

@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@colyseus/schema": "^1.0.25",
     "@types/uuid": "^8.3.0",
     "colyseus.js": "^0.14.12",
     "core-js": "^3.6.5",
